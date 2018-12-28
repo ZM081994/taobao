@@ -1,0 +1,97 @@
+@mixin num($w, $h) {
+    width: $w;
+    height: $h;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+    outline: none;
+    box-sizing: border-box;
+    font-size: .16rem;
+}
+
+$bg:background;
+html,
+body {
+    @include num(100%, 100%);
+    font-size: 100px;
+    #{$bg}: #F2F2F2;
+}
+
+.wrap {
+    @include num(100%, 100%);
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    @include num(100%, .5rem);
+    display: flex;
+    align-items: center;
+    padding: 0 .15rem;
+}
+
+header a i.icon {
+    font-size: .2rem;
+}
+
+header a:nth-of-type(1) {
+    flex: 1;
+    color: #ccc;
+}
+
+header a:nth-of-type(2) {
+    flex: 1;
+    margin-left: .15rem;
+}
+
+header form {
+    flex: 8;
+    @include num(100%, .35rem);
+    position: relative;
+}
+
+header form input {
+    @include num(100%, 100%);
+    border: none;
+    #{$bg}: #fff;
+    border-radius: .1rem;
+}
+
+header form button {
+    border: none;
+    position: absolute;
+    right: .15rem;
+    top: .08rem;
+    #{$bg}: none;
+}
+
+.title {
+    @include num(100%, .4rem);
+}
+
+.title ul {
+    @include num(100%, .4rem);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    li {
+        color: #5B5B5B;
+    }
+}
+
+.top {
+    @include num(100%, .4rem);
+    ul {
+        @include num(100%, .4rem);
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        li {
+            color: #5B5B5B;
+        }
+    }
+}
