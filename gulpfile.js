@@ -13,7 +13,14 @@ var concant = require("gulp-concat");
 var htmlmin = require("gulp-htmlmin");
 
 //压缩js
-var js = require("gulp-uglify");
+var uglify = require("gulp-uglify");
+//es6转es5
+var babel = require("gulp-babel");
+
+var url = require("url");
+var fs = require("fs");
+var path = require("path");
+var data = require("./data/shopping")
 
 //起服务
 var server = require("gulp-webserver");
@@ -23,15 +30,79 @@ gulp.task("devSass", function() {
         .pipe(gulp.dest("./src/css"))
 });
 
-gulp.task("devServer", function() {
+function serverFun(serverPath) {
     return gulp.src("src")
         .pipe(server({
             port: 3300,
+            open: true,
+            middleware: function(req, res, next) {
+                var pathname = url.parse(req.url).pathname;
+                console.log(pathname);
 
+                if (pathname === "/favicon.ico") {
+                    return res.end();
+                }
+                if (pathname === "/api/shopping") {
+                    var name = url.parse(req.url, true).query.name;
+                    var newArr = [];
+                    for (var i in data) {
+                        if (name === i) {
+                            data[i].forEach(function(file) {
+                                newArr.push(file);
+                            })
+                        }
+                    }
+                    res.end(JSON.stringify({ code: 1, msg: newArr }))
+
+                } else {
+                    pathname = pathname === "/" ? "index.html" : pathname;
+                    res.end(fs.readFileSync(path.join(__dirname, "src", pathname)));
+                }
+            }
         }))
-});
-
+}
 gulp.task("watch", function() {
     return gulp.watch("./src/scss/*.scss", gulp.series("devSass"))
 });
+
 gulp.task("default", gulp.series("devSass", "watch"));
+
+gulp.task("devServer", function() {
+    return serverFun("src");
+})
+
+gulp.task("dev", gulp.series("devSass", "devServer", "watch"))
+
+//js
+gulp.task("js", function() {
+    return gulp.src("./src/js/*.js")
+        .pipe(babel({
+            presets: ['@babel/env']
+        }))
+
+    .pipe(uglify())
+        .pipe(gulp.dest("./bulit/js"))
+})
+
+//html
+gulp.task("dHtmlmin", function() {
+    return gulp.src("./src/*.html")
+        .pipe(htmlmin({
+            collapseWhitespace: true
+        }))
+        .pipe(gulp.dest("./bulit"))
+})
+
+
+//css
+gulp.task("dCss", function() {
+    return gulp.src("./src/css/*.css")
+        .pipe(clean())
+        .pipe(gulp.dest("./bulit/css"))
+})
+
+gulp.task('bServer', function() {
+    return serverFun('bulit')
+})
+
+gulp.task("bulit", gulp.series("js", "dHtmlmin", "dCss"))
