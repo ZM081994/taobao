@@ -65,8 +65,6 @@ gulp.task("watch", function() {
     return gulp.watch("./src/scss/*.scss", gulp.series("devSass"))
 });
 
-gulp.task("default", gulp.series("devSass", "watch"));
-
 gulp.task("devServer", function() {
     return serverFun("src");
 })
@@ -81,7 +79,7 @@ gulp.task("js", function() {
         }))
 
     .pipe(uglify())
-        .pipe(gulp.dest("./bulit/js"))
+        .pipe(gulp.dest("./bulid/js"))
 })
 
 //html
@@ -90,7 +88,7 @@ gulp.task("dHtmlmin", function() {
         .pipe(htmlmin({
             collapseWhitespace: true
         }))
-        .pipe(gulp.dest("./bulit"))
+        .pipe(gulp.dest("./bulid"))
 })
 
 
@@ -98,11 +96,12 @@ gulp.task("dHtmlmin", function() {
 gulp.task("dCss", function() {
     return gulp.src("./src/css/*.css")
         .pipe(clean())
-        .pipe(gulp.dest("./bulit/css"))
+        .pipe(gulp.dest("./bulid/css"))
 })
 
 gulp.task('bServer', function() {
-    return serverFun('bulit')
+    return serverFun('bulid')
 })
 
-gulp.task("bulit", gulp.series("js", "dHtmlmin", "dCss"))
+//线上
+gulp.task("bulid", gulp.series("js", "dHtmlmin", "dCss"))
